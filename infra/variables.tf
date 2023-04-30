@@ -15,3 +15,5 @@ variable "schema_file_path" {
   type        = string
   description = "The location of the Bigquery YAML"
 }
+
+

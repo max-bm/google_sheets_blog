@@ -5,6 +5,10 @@ terraform {
       version = "4.63.1"
     }
   }
+  backend "gcs" {
+    bucket  = "terraform-state-305379539480"
+    prefix  = "terraform/blog"
+  }
 }
 
 provider "google" {
