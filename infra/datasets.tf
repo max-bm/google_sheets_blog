@@ -18,5 +18,4 @@ resource "google_bigquery_dataset" "dataset" {
       kms_key_name = each.value.cmek_key
     }
   }
-  depends_on = [google_project_iam_member.set_roles]
 }
