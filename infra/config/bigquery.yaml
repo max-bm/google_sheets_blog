@@ -1,0 +1,22 @@
+bigquery:
+  datasets:
+  - name: blogdemo
+    location: europe-west2
+    create: true
+    friendly_name: blogdemo
+    description: blogdemo
+    labels:
+      project: 'demo'
+    delete_contents_on_destroy: false
+    tables:
+    - name: boys
+      deletion_protection: false
+      external_data_configuration:
+        autodetect: true
+        ignore_unknown_values: false
+        source_format: GOOGLE_SHEETS
+        source_uris:
+        - https://docs.google.com/spreadsheets/d/1ymUsbH3c1UDS5lee-Ngi2mlpjIq8HL0XadlrHp4P4LU
+        google_sheets_options:
+          range: BOYS
+          skip_leading_rows: 1

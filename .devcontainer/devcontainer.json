@@ -1,0 +1,52 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+    "name": "gcp-billing-automation",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+
+      "ms-azuretools.vscode-docker",
+      "eamodio.gitlens",
+      "redhat.vscode-yaml",
+      "ms-vsliveshare.vsliveshare",
+      "hashicorp.terraform",
+      "davidanson.vscode-markdownlint",
+      "foxundermoon.shell-format",
+      "burtlo.inspec",
+      "mechatroner.rainbow-csv",
+    ],
+    "mounts": [
+      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+    ],
+    "runArgs": [
+      // Let's give some network power for openvpn
+      "--privileged",
+      // Mount config into devcontainer
+      "-v",
+      "${env:HOME}${env:USERPROFILE}/.config:/home/vscode/.config",
+      // Cross platform way of mounting .ssh
+      // Mount your .ssh folder to /tmp/.ssh-localhost so we can copy its contents
+      "-v",
+      "${env:HOME}/.ssh:/tmp/.ssh-localhost:ro",
+      // mount GPG keys
+      //"-v",
+      //"${env:HOME}/.gnupg/:/home/vscode/.gnupg/",
+     // "-v",
+     // "${env:XDG_RUNTIME_DIR}/gnupg/:/root/.gnupg/"
+    ],
+    "settings": {
+      "remote.extensionKind": {
+        "ms-azuretools.vscode-docker": "workspace",
+      },
+      "terraform.languageServer": {
+        "enabled": false,
+        "args": []
+      },
+      "terraform.indexing": {
+        "enabled": false,
+        "liveIndexing": false,
+        "exclude": []
+      },
+    },
+    // Copy the contents of ssh to the correct location and set permissions
+    "postCreateCommand": "sudo chown vscode:vscode /var/run/docker.sock && mkdir -p /home/vscode/.ssh && cp -r /tmp/.ssh-localhost/* /home/vscode/.ssh && chmod 700 /home/vscode/.ssh && chmod 600 /home/vscode/.ssh/* && pre-commit install"
+  }
