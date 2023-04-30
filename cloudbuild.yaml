@@ -1,5 +1,5 @@
 steps:
-  - id: "tf-apply"
+  - id: "tf-plan"
     waitFor: ['-']
     name: "hashicorp/terraform:1.4.4"
     dir: "./infra"
@@ -10,3 +10,14 @@ steps:
         echo "Applying TF"
         terraform init
         terraform plan
+  - id: "tf-apply"
+    waitFor: ['tf-plan']
+    name: "hashicorp/terraform:1.4.4"
+    dir: "./infra"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        echo "Applying TF"
+        terraform init
+        terraform apply --auto-approve
