@@ -29,8 +29,23 @@ resource "google_service_account_iam_binding" "token-creator-iam" {
 }
 
 
+data "google_service_account_access_token" "gdrive" {
+  provider               = google
+  target_service_account = google_service_account.bigquery.email
+  scopes = ["https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/bigquery",
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/userinfo.email"
+  ]
+  lifetime   = "300s"
+  depends_on = [resource.google_service_account_iam_binding.token-creator-iam]
+}
 
-
+provider "google" {
+  alias        = "impersonated"
+  access_token = data.google_service_account_access_token.gdrive.access_token
+  project      = var.project_id
+}
 
 
 
@@ -38,7 +53,7 @@ resource "google_service_account_iam_binding" "token-creator-iam" {
 resource "google_bigquery_table" "table" {
   for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
 
-  provider            = google
+  provider            = google.impersonated
   dataset_id          = each.value.dataset_id
   project             = var.project_id
   table_id            = each.value.name
