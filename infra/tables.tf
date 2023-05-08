@@ -1,3 +1,29 @@
+locals {
+  bq_roles = ["roles/bigquery.admin"]
+}
+
+
+data "google_project" "function_project" {
+  project_id = var.project_id
+}
+
+resource "google_service_account" "bigquery" {
+  account_id   = "sa-bq-${data.google_project.function_project.number}"
+  display_name = "BQ SA"
+  project      = var.project_id
+}
+
+resource "google_project_iam_member" "set-roles" {
+  for_each = toset(var.project_iam_roles)
+
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.bigquery.email}"
+}
+
+
+
+
 resource "google_bigquery_table" "table" {
   for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
 
