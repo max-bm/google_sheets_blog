@@ -22,6 +22,17 @@ resource "google_project_iam_member" "set-roles" {
 }
 
 
+resource "google_service_account_iam_binding" "token-creator-iam" {
+  service_account_id = "projects/-/serviceAccounts/${google_service_account.bigquery.email}"
+  role               = "roles/iam.serviceAccountTokenCreator"
+  members            = ["serviceAccount:${data.google_project.function_project.number}@cloudbuild.gserviceaccount.com"]
+}
+
+
+
+
+
+
 
 
 resource "google_bigquery_table" "table" {
