@@ -1,5 +1,6 @@
 locals {
-  bq_roles = ["roles/bigquery.admin"]
+  bq_roles = ["roles/bigquery.admin",
+  "roles/iam.serviceAccountTokenCreator"]
 }
 
 
