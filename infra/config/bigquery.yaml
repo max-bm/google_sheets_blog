@@ -20,3 +20,14 @@ bigquery:
         google_sheets_options:
           range: BOYS
           skip_leading_rows: 1
+    - name: girls
+      deletion_protection: false
+      external_data_configuration:
+        autodetect: true
+        ignore_unknown_values: false
+        source_format: GOOGLE_SHEETS
+        source_uris:
+        - https://docs.google.com/spreadsheets/d/1gXU5kgTlitaOf4W0ulOpppnIisvOF_LRg1sn7QVZ_QE
+        google_sheets_options:
+          range: GIRLS
+          skip_leading_rows: 1
