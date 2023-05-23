@@ -1,4 +1,8 @@
 locals {
+  apis = ["bigquery.googleapis.com",
+    "cloudbuild.googleapis.com"
+  ]
+
   default_labels = {
     "department" : "medium"
   }

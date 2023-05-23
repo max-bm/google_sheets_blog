@@ -1,52 +1,30 @@
-// See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-    "name": "gcp-billing-automation",
-    "dockerFile": "Dockerfile",
-    "extensions": [
-
-      "ms-azuretools.vscode-docker",
-      "eamodio.gitlens",
-      "redhat.vscode-yaml",
-      "ms-vsliveshare.vsliveshare",
-      "hashicorp.terraform",
-      "davidanson.vscode-markdownlint",
-      "foxundermoon.shell-format",
-      "burtlo.inspec",
-      "mechatroner.rainbow-csv",
-    ],
-    "mounts": [
-      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
-    ],
-    "runArgs": [
-      // Let's give some network power for openvpn
-      "--privileged",
-      // Mount config into devcontainer
-      "-v",
-      "${env:HOME}${env:USERPROFILE}/.config:/home/vscode/.config",
-      // Cross platform way of mounting .ssh
-      // Mount your .ssh folder to /tmp/.ssh-localhost so we can copy its contents
-      "-v",
-      "${env:HOME}/.ssh:/tmp/.ssh-localhost:ro",
-      // mount GPG keys
-      //"-v",
-      //"${env:HOME}/.gnupg/:/home/vscode/.gnupg/",
-     // "-v",
-     // "${env:XDG_RUNTIME_DIR}/gnupg/:/root/.gnupg/"
-    ],
-    "settings": {
-      "remote.extensionKind": {
-        "ms-azuretools.vscode-docker": "workspace",
-      },
-      "terraform.languageServer": {
-        "enabled": false,
-        "args": []
-      },
-      "terraform.indexing": {
-        "enabled": false,
-        "liveIndexing": false,
-        "exclude": []
-      },
-    },
-    // Copy the contents of ssh to the correct location and set permissions
-    "postCreateCommand": "sudo chown vscode:vscode /var/run/docker.sock && mkdir -p /home/vscode/.ssh && cp -r /tmp/.ssh-localhost/* /home/vscode/.ssh && chmod 700 /home/vscode/.ssh && chmod 600 /home/vscode/.ssh/* && pre-commit install"
-  }
+	"name": "cookiecutter-bq-ml",
+	"image": "eu.gcr.io/cts-public-images-1/cts-standard:latest",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"burtlo.inspec",
+				"davidanson.vscode-markdownlint",
+				"foxundermoon.shell-format",
+				"hashicorp.terraform",
+				"redhat.vscode-yaml",
+				"samuelcolvin.jinjahtml"
+			]
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {}
+	},
+	"remoteUser": "vscode",
+	"mounts": [
+		"source=${localEnv:HOME}/.config,target=/home/vscode/.config,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.ssh,target=/tmp/.ssh,type=bind,consistency=cached"
+	  ],
+	"containerEnv": {
+		"GOOGLE_APPLICATION_CREDENTIALS":"/home/vscode/.config/gcloud/application_default_credentials.json",
+		"CLOUDSDK_CONFIG": "/home/vscode/.config/gcloud"
+	},
+	"postCreateCommand": "pip3 install -r .devcontainer/requirements.txt",
+	"postStartCommand": "pre-commit install && cp -R /tmp/.ssh/* /home/vscode/.ssh"
+}
