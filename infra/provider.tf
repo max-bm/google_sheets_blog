@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "terraform-state-305379539480"
+    bucket = "cts-3d9-objective-bhabha-tfstate"
     prefix = "terraform/blog"
   }
 }
