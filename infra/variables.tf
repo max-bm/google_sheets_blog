@@ -1,5 +1,5 @@
 variable "project_id" {
-  default     = "cloudsqlpoc-demo"
+  default     = "cts-3d9-objective-bhabha"
   type        = string
   description = "The project where the function should be deployed"
 }
