@@ -1,7 +1,7 @@
 locals {
     sheets_roles = [
-        "roles/bigquery.admin",
-# #        "roles/iam.serviceAccountTokenCreator"
+#        "roles/bigquery.admin",
+        "roles/iam.serviceAccountTokenCreator"
     ]
 }
 
@@ -25,37 +25,37 @@ resource "google_project_iam_member" "set_roles" {
  
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
     service_account_id = "projects/-/serviceAccounts/${google_service_account.sheets_access.email}"
-    role               = "roles/bigquery.admin"
+    role               = "roles/iam.serviceAccountTokenCreator"
     members            = [
         "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
     ]
 }
  
-# data "google_service_account_access_token" "gdrive" {
-#     provider               = google
-#     target_service_account = google_service_account.sheets_access.email
-#     scopes = [
-#         "https://www.googleapis.com/auth/drive",
-#         "https://www.googleapis.com/auth/bigquery",
-#         "https://www.googleapis.com/auth/cloud-platform",
-#         "https://www.googleapis.com/auth/userinfo.email"
-#     ]
-#     lifetime   = "300s"
-#     depends_on = [
-#         resource.google_service_account_iam_binding.impersonate_sheets_access
-#     ]
-# }
-# 
-# provider "google" {
-#     alias        = "impersonated"
-#     access_token = data.google_service_account_access_token.gdrive.access_token
-#     project      = var.project_id
-# }
+data "google_service_account_access_token" "gdrive" {
+    provider               = google
+    target_service_account = google_service_account.sheets_access.email
+    scopes = [
+        "https://www.googleapis.com/auth/drive",
+        #"https://www.googleapis.com/auth/bigquery",
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/userinfo.email"
+    ]
+    lifetime   = "300s"
+    depends_on = [
+        resource.google_service_account_iam_binding.impersonate_sheets_access
+    ]
+}
+
+provider "google" {
+    alias        = "impersonated"
+    access_token = data.google_service_account_access_token.gdrive.access_token
+    project      = var.project_id
+}
 
 resource "google_bigquery_table" "table" {
     for_each = {for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl}
 
-#     provider            = google.impersonated
+    provider            = google.impersonated
     dataset_id          = each.value.dataset_id
     project             = var.project_id
     table_id            = each.value.name
@@ -105,6 +105,6 @@ resource "google_bigquery_table" "table" {
 
     depends_on = [
         google_bigquery_dataset.dataset,
-        # google_project_iam_member.set_roles
+        google_project_iam_member.set_roles
     ]
 }
