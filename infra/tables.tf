@@ -7,11 +7,11 @@ locals {
   "roles/iam.serviceAccountTokenCreator"]
 }
 
-resource "google_project_iam_member" "set-roles" {
+resource "google_project_iam_binding" "set-roles" {
   for_each = toset(local.sheets_roles)
   project = var.project_id
   role    = each.value
-  member  = "serviceAccount:${data.google_project.sheets_project.number}@cloudbuild.gserviceaccount.com"
+  members  = ["serviceAccount:${data.google_project.sheets_project.number}@cloudbuild.gserviceaccount.com"]
 }
 
 data "google_service_account_access_token" "gdrive" {
