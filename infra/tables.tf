@@ -10,7 +10,7 @@ data "google_project" "demo_project" {
 }
 
 resource "google_service_account" "sheets_access" {
-    account_id   = "sheets_access_sa"
+    account_id   = "sheets-access-sa"
     display_name = "Google Sheets Access Service Account"
     project      = var.project_id
 }
