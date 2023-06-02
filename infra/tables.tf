@@ -14,7 +14,7 @@ resource "google_service_account" "bigquery" {
 }
 
 resource "google_project_iam_member" "set-roles" {
-  for_each = toset(local.bq_roles)
+  for_each = toset(local.sheets_roles)
 
   project = var.project_id
   role    = each.value
