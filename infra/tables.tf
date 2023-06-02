@@ -41,6 +41,7 @@ data "google_service_account_access_token" "gdrive" {
         "https://www.googleapis.com/auth/userinfo.email"
     ]
     lifetime   = "300s"
+    depends_on = [resource.google_service_account_iam_binding.token-creator-iam]
 }
 
 provider "google" {
