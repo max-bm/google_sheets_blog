@@ -1,44 +1,28 @@
+data "google_project" "sheets_project" {
+  project_id = var.project_id
+}
+
 locals {
   sheets_roles = ["roles/bigquery.admin",
   "roles/iam.serviceAccountTokenCreator"]
 }
 
-data "google_project" "sheets_project" {
-  project_id = var.project_id
-}
-
-resource "google_service_account" "bigquery" {
-  account_id   = "sa-bq-${data.google_project.sheets_project.number}"
-  display_name = "BQ SA"
-  project      = var.project_id
-}
-
 resource "google_project_iam_member" "set-roles" {
   for_each = toset(local.sheets_roles)
-
   project = var.project_id
   role    = each.value
-  member  = "serviceAccount:${google_service_account.bigquery.email}"
+  member  = "serviceAccount:${data.google_project.sheets_project.number}@cloudbuild.gserviceaccount.com"
 }
-
-
-resource "google_service_account_iam_binding" "token-creator-iam" {
-  service_account_id = "projects/-/serviceAccounts/${google_service_account.bigquery.email}"
-  role               = "roles/iam.serviceAccountTokenCreator"
-  members            = ["serviceAccount:${data.google_project.sheets_project.number}@cloudbuild.gserviceaccount.com"]
-}
-
 
 data "google_service_account_access_token" "gdrive" {
   provider               = google
-  target_service_account = google_service_account.bigquery.email
+  target_service_account = "${data.google_project.sheets_project.number}@cloudbuild.gserviceaccount.com"
   scopes = ["https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/bigquery",
     "https://www.googleapis.com/auth/cloud-platform",
     "https://www.googleapis.com/auth/userinfo.email"
   ]
   lifetime   = "300s"
-  depends_on = [resource.google_service_account_iam_binding.token-creator-iam]
 }
 
 provider "google" {
@@ -46,9 +30,6 @@ provider "google" {
   access_token = data.google_service_account_access_token.gdrive.access_token
   project      = var.project_id
 }
-
-
-
 
 resource "google_bigquery_table" "table" {
   for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
