@@ -1,15 +1,14 @@
 locals {
-  bq_roles = ["roles/bigquery.admin",
+  sheets_roles = ["roles/bigquery.admin",
   "roles/iam.serviceAccountTokenCreator"]
 }
 
-
-data "google_project" "function_project" {
+data "google_project" "sheets_project" {
   project_id = var.project_id
 }
 
 resource "google_service_account" "bigquery" {
-  account_id   = "sa-bq-${data.google_project.function_project.number}"
+  account_id   = "sa-bq-${data.google_project.sheets_project.number}"
   display_name = "BQ SA"
   project      = var.project_id
 }
@@ -26,7 +25,7 @@ resource "google_project_iam_member" "set-roles" {
 resource "google_service_account_iam_binding" "token-creator-iam" {
   service_account_id = "projects/-/serviceAccounts/${google_service_account.bigquery.email}"
   role               = "roles/iam.serviceAccountTokenCreator"
-  members            = ["serviceAccount:${data.google_project.function_project.number}@cloudbuild.gserviceaccount.com"]
+  members            = ["serviceAccount:${data.google_project.sheets_project.number}@cloudbuild.gserviceaccount.com"]
 }
 
 
