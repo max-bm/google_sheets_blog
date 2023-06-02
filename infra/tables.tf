@@ -15,7 +15,7 @@ resource "google_service_account" "sheets_access" {
     project      = var.project_id
 }
  
-resource "google_project_iam_member" "set-roles" {
+resource "google_project_iam_member" "set_roles" {
     for_each = toset(local.sheets_roles)
 
     project = var.project_id
@@ -23,9 +23,9 @@ resource "google_project_iam_member" "set-roles" {
     member  = "serviceAccount:${google_service_account.sheets_access.email}"
 }
  
-resource "google_service_account_iam_binding" "token-creator-iam" {
+resource "google_service_account_iam_binding" "impersonate_sheets_access" {
     service_account_id = "projects/-/serviceAccounts/${google_service_account.sheets_access.email}"
-    role               = "roles/iam.serviceAccountTokenCreator"
+    role               = "roles/bigquery.admin"
     members            = [
         "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
     ]
@@ -42,7 +42,7 @@ resource "google_service_account_iam_binding" "token-creator-iam" {
 #     ]
 #     lifetime   = "300s"
 #     depends_on = [
-#         resource.google_service_account_iam_binding.token-creator-iam
+#         resource.google_service_account_iam_binding.impersonate_sheets_access
 #     ]
 # }
 # 
@@ -105,6 +105,6 @@ resource "google_bigquery_table" "table" {
 
     depends_on = [
         google_bigquery_dataset.dataset,
-        # google_project_iam_member.set-roles
+        # google_project_iam_member.set_roles
     ]
 }
