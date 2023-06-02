@@ -1,10 +1,7 @@
 locals {
   sheets_roles = ["roles/bigquery.admin",
-  "roles/iam.serviceAccountTokenCreator"]
-}
-
-data "google_project" "sheets_project" {
-  project_id = var.project_id
+  "roles/iam.serviceAccountTokenCreator",
+  "roles/iam.serviceAccountAdmin"]
 }
 
 resource "google_service_account" "bigquery" {
