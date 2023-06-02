@@ -4,6 +4,10 @@ locals {
   "roles/iam.serviceAccountAdmin"]
 }
 
+data "google_project" "function_project" {
+  project_id = var.project_id
+}
+
 resource "google_service_account" "bigquery" {
   account_id   = "sa-bq-${data.google_project.sheets_project.number}"
   display_name = "BQ SA"
