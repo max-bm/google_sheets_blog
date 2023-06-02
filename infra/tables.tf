@@ -4,7 +4,7 @@ locals {
   "roles/iam.serviceAccountAdmin"]
 }
 
-data "google_project" "function_project" {
+data "google_project" "sheets_project" {
   project_id = var.project_id
 }
 
