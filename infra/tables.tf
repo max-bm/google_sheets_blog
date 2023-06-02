@@ -83,6 +83,6 @@ resource "google_bigquery_table" "table" {
 
   depends_on = [
     google_bigquery_dataset.dataset,
-    google_project_iam_member.set-roles
+    google_project_iam_binding.set-roles
   ]
 }
