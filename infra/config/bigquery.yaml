@@ -9,25 +9,25 @@ bigquery:
       project: 'demo'
     delete_contents_on_destroy: false
     tables:
-    - name: boys
+    - name: demo_table_1
       deletion_protection: false
       external_data_configuration:
         autodetect: true
         ignore_unknown_values: false
         source_format: GOOGLE_SHEETS
         source_uris:
-        - https://docs.google.com/spreadsheets/d/1gXU5kgTlitaOf4W0ulOpppnIisvOF_LRg1sn7QVZ_QE
+        - https://docs.google.com/spreadsheets/d/1oJF7TJBAUpMA_eITZwplJfmo3-68dqfWVcDbe1AmTlU/edit#gid=0
         google_sheets_options:
           range: BOYS
           skip_leading_rows: 1
-    - name: girls
+    - name: demo_table_2
       deletion_protection: false
       external_data_configuration:
         autodetect: true
         ignore_unknown_values: false
         source_format: GOOGLE_SHEETS
         source_uris:
-        - https://docs.google.com/spreadsheets/d/1gXU5kgTlitaOf4W0ulOpppnIisvOF_LRg1sn7QVZ_QE
+        - https://docs.google.com/spreadsheets/d/15i4gnJiQCY0QOp3oWP3u9YolAR21vzl_Wam7oMKIG-M/edit#gid=0
         google_sheets_options:
           range: GIRLS
           skip_leading_rows: 1
