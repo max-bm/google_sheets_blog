@@ -1,6 +1,6 @@
 locals {
     sheets_roles = [
-        #"roles/bigquery.admin",
+        "roles/bigquery.admin",
         "roles/iam.serviceAccountTokenCreator"
     ]
 }
