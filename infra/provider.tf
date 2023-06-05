@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "cts-3d9-objective-bhabha-tfstate"
+    bucket = "blog-testing-sandbox-tfstate"
     prefix = "terraform/blog"
   }
 }
