@@ -1,8 +1,7 @@
 resource "google_bigquery_dataset" "dataset" {
-  depends_on = [google_project_service.enable_apis]
-
   for_each = local.datasets_to_create
 
+  provider                   = google.impersonated
   dataset_id                 = each.key
   project                    = var.project_id
   friendly_name              = try(each.value.friendly_name, each.key)
@@ -20,4 +19,5 @@ resource "google_bigquery_dataset" "dataset" {
       kms_key_name = each.value.cmek_key
     }
   }
+  depends_on = [google_project_service.enable_apis]
 }
