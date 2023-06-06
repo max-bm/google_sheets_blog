@@ -1,6 +1,7 @@
 locals {
   apis = [
-    "bigquery.googleapis.com"
+    "bigquery.googleapis.com",
+    "iam.googleapis.com"
   ]
 
   default_labels = {
