@@ -1,7 +1,6 @@
 locals {
   apis = [
     "bigquery.googleapis.com",
-    "cloudbuild.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com"
   ]
