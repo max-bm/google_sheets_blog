@@ -38,7 +38,6 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
 }
 
 data "google_service_account_access_token" "gdrive" {
-  # provider               = google
   target_service_account = google_service_account.sheets_access.email
   scopes = [
     "https://www.googleapis.com/auth/drive",
@@ -55,6 +54,10 @@ provider "google" {
   alias        = "impersonated"
   access_token = data.google_service_account_access_token.gdrive.access_token
   project      = var.project_id
+
+  depends_on = [
+    data.google_service_account_access_token.gdrive
+  ]
 }
 
 resource "google_bigquery_table" "table" {
@@ -110,6 +113,6 @@ resource "google_bigquery_table" "table" {
 
   depends_on = [
     google_bigquery_dataset.dataset,
-    google_project_iam_member.set_roles
+    provder.google.impersonated
   ]
 }
