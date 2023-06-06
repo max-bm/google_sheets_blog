@@ -38,7 +38,7 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
 }
 
 data "google_service_account_access_token" "gdrive" {
-  provider               = google
+  # provider               = google
   target_service_account = google_service_account.sheets_access.email
   scopes = [
     "https://www.googleapis.com/auth/drive",
