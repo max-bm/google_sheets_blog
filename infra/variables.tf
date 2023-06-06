@@ -1,5 +1,5 @@
 variable "project_id" {
-  default     = "blog-is-annoying"
+  default     = "blog-please-be-done"
   type        = string
   description = "The project where the function should be deployed"
 }
