@@ -21,6 +21,9 @@ resource "google_project_iam_member" "set_roles" {
   project = var.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.sheets_access.email}"
+  depends_on = [
+    resource.google_service_account.sheets_access
+  ]
 }
 
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
@@ -28,6 +31,9 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   role               = "roles/iam.serviceAccountTokenCreator"
   members = [
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
+  ]
+  depends_on = [
+    resource.google_project_iam_member.set_roles
   ]
 }
 
