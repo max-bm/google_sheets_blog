@@ -54,10 +54,6 @@ provider "google" {
   alias        = "impersonated"
   access_token = data.google_service_account_access_token.gdrive.access_token
   project      = var.project_id
-
-  depends_on = [
-    data.google_service_account_access_token.gdrive
-  ]
 }
 
 resource "google_bigquery_table" "table" {
