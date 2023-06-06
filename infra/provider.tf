@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "final-blog-test-tfstate"
+    bucket = "final-final-blog-test-tfstate"
     prefix = "terraform/blog"
   }
 }
