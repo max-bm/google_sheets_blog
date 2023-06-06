@@ -1,5 +1,5 @@
 variable "project_id" {
-  default     = "blog-testing-sandbox"
+  default     = "blog-test-2-389008"
   type        = string
   description = "The project where the function should be deployed"
 }

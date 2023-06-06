@@ -6,12 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "blog-testing-sandbox-tfstate"
+    bucket = "blog-test-2-389008-tfstate"
     prefix = "terraform/blog"
   }
 }
-
-# provider "google" {
-#   project = var.project_id
-#   region  = var.region
-# }
