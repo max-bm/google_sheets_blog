@@ -109,6 +109,6 @@ resource "google_bigquery_table" "table" {
 
   depends_on = [
     google_bigquery_dataset.dataset,
-    provder.google.impersonated
+    data.google_service_account_access_token.gdrive
   ]
 }
