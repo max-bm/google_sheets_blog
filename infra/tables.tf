@@ -32,60 +32,23 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com",
     "user:max.buckmire-monro@cts.co"
   ]
-#   provisioner "local-exec" {
-#     command = "sleep 120"
-#   }
   depends_on = [
     resource.google_project_iam_member.set_roles
   ]
 }
 
-resource "null_resource" "iam_binding_listener" {
-  provisioner "local-exec" {
-    command = <<EOT
-        timeout $TIMEOUT_SECONDS bash -c '
-            until gcloud iam service-accounts get-iam-policy $SA_ID | grep -q $ROLE; do 
-                echo "[ERROR] IAM Binding cannot be found. Retrying..."
-                sleep $RETRY_INTERVAL
-            done
-            echo "[SUCCESS] IAM Binding found."            
-        '
-        if [ $? -ne 0 ]; then 
-            echo "[ERROR] IAM Binding $ROLE not found on service account $SA_ID." 
-            exit 1
-        fi
-    EOT
-    environment = {
-      SA_ID = "${resource.google_service_account.sheets_access.email}" # CAN THESE BE PULLED DIRECTLY FROM THE ATTRIBUTES OF THE BINDING RESOURCE?
-      ROLE  = "roles/iam.serviceAccountTokenCreator" # CAN THESE BE PULLED DIRECTLY FROM THE ATTRIBUTES OF THE BINDING RESOURCE? IF SO COULD MAYBE WRAP THIS IN SOME CUSTOM PROVIDER WITH SIMPLIFIED FIELDS
-      TIMEOUT_SECONDS = "120"
-      RETRY_INTERVAL = "10"
-    }
-  }
+data "google_service_account_access_token" "gdrive" {
+  target_service_account = google_service_account.sheets_access.email
+  scopes = [
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/userinfo.email"
+  ]
+  lifetime = "300s"
   depends_on = [
     resource.google_service_account_iam_binding.impersonate_sheets_access
   ]
 }
-
-# # resource "time_sleep" "wait_120_seconds" {
-# #     depends_on  = [
-# #         resource.google_service_account_iam_binding.impersonate_sheets_access
-# #     ]
-# #     create_duration = "120s"
-# # }
-
-# data "google_service_account_access_token" "gdrive" {
-#   target_service_account = google_service_account.sheets_access.email
-#   scopes = [
-#     "https://www.googleapis.com/auth/drive",
-#     "https://www.googleapis.com/auth/cloud-platform",
-#     "https://www.googleapis.com/auth/userinfo.email"
-#   ]
-#   lifetime = "300s"
-#   depends_on = [
-#     resource.null_resource.iam_binding_listener
-#   ]
-# }
 
 # provider "google" {
 #   alias        = "impersonated"
@@ -93,60 +56,59 @@ resource "null_resource" "iam_binding_listener" {
 #   project      = var.project_id
 # }
 
+resource "google_bigquery_table" "table" {
+  for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
 
-# resource "google_bigquery_table" "table" {
-#   for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
+  # provider            = google.impersonated
+  dataset_id          = each.value.dataset_id
+  project             = var.project_id
+  table_id            = each.value.name
+  deletion_protection = each.value.deletion_protection
+  schema              = try(each.value.schema_file, null) != null ? file("${var.schema_file_path}/${each.value.schema_file}") : null
+  labels              = merge(local.default_labels, try(each.value.labels, {}))
 
-#   provider            = google.impersonated
-#   dataset_id          = each.value.dataset_id
-#   project             = var.project_id
-#   table_id            = each.value.name
-#   deletion_protection = each.value.deletion_protection
-#   schema              = try(each.value.schema_file, null) != null ? file("${var.schema_file_path}/${each.value.schema_file}") : null
-#   labels              = merge(local.default_labels, try(each.value.labels, {}))
+  dynamic "time_partitioning" {
+    for_each = try(each.value.time_partitioning, null) != null ? [each.value.time_partitioning] : []
 
-#   dynamic "time_partitioning" {
-#     for_each = try(each.value.time_partitioning, null) != null ? [each.value.time_partitioning] : []
+    content {
+      type  = time_partitioning.value.type
+      field = try(each.value.time_partitioning.field, null)
+    }
+  }
 
-#     content {
-#       type  = time_partitioning.value.type
-#       field = try(each.value.time_partitioning.field, null)
-#     }
-#   }
+  dynamic "external_data_configuration" {
+    for_each = try(each.value.external_data_configuration, null) != null ? [each.value.external_data_configuration] : []
 
-#   dynamic "external_data_configuration" {
-#     for_each = try(each.value.external_data_configuration, null) != null ? [each.value.external_data_configuration] : []
+    content {
+      autodetect    = try(external_data_configuration.value.autodetect, false)
+      compression   = try(external_data_configuration.value.compression, "NONE")
+      source_format = external_data_configuration.value.source_format
+      source_uris   = external_data_configuration.value.source_uris
 
-#     content {
-#       autodetect    = try(external_data_configuration.value.autodetect, false)
-#       compression   = try(external_data_configuration.value.compression, "NONE")
-#       source_format = external_data_configuration.value.source_format
-#       source_uris   = external_data_configuration.value.source_uris
+      dynamic "csv_options" {
+        for_each = try(external_data_configuration.value.csv_options, null) != null ? [external_data_configuration.value.csv_options] : []
 
-#       dynamic "csv_options" {
-#         for_each = try(external_data_configuration.value.csv_options, null) != null ? [external_data_configuration.value.csv_options] : []
+        content {
+          quote             = try(csv_options.value.quote, "\n")
+          skip_leading_rows = try(csv_options.value.skip_leading_rows, 0)
+          encoding          = try(csv_options.value.encoding, "UTF-8")
+          field_delimiter   = try(csv_options.value.field_delimiter, ",")
+        }
+      }
 
-#         content {
-#           quote             = try(csv_options.value.quote, "\n")
-#           skip_leading_rows = try(csv_options.value.skip_leading_rows, 0)
-#           encoding          = try(csv_options.value.encoding, "UTF-8")
-#           field_delimiter   = try(csv_options.value.field_delimiter, ",")
-#         }
-#       }
+      dynamic "google_sheets_options" {
+        for_each = try(external_data_configuration.value.google_sheets_options, null) != null ? [external_data_configuration.value.google_sheets_options] : []
 
-#       dynamic "google_sheets_options" {
-#         for_each = try(external_data_configuration.value.google_sheets_options, null) != null ? [external_data_configuration.value.google_sheets_options] : []
+        content {
+          range             = try(google_sheets_options.value.range, null)
+          skip_leading_rows = try(google_sheets_options.value.skip_leading_rows, null)
+        }
+      }
+    }
+  }
 
-#         content {
-#           range             = try(google_sheets_options.value.range, null)
-#           skip_leading_rows = try(google_sheets_options.value.skip_leading_rows, null)
-#         }
-#       }
-#     }
-#   }
-
-#   depends_on = [
-#     google_bigquery_dataset.dataset,
-#     data.google_service_account_access_token.gdrive
-#   ]
-# }
+  depends_on = [
+    google_bigquery_dataset.dataset,
+    data.google_service_account_access_token.gdrive
+  ]
+}

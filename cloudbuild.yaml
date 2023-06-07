@@ -1,5 +1,5 @@
 steps:
-  - id: "tf-plan"
+  - id: "install-terragrunt"
     waitFor: ['-']
     name: "hashicorp/terraform:1.4.4"
     dir: "./infra"
@@ -7,17 +7,30 @@ steps:
     args:
       - "-c"
       - |
-        echo "Applying TF"
-        terraform init
-        terraform plan
-  - id: "tf-apply"
-    waitFor: ['tf-plan']
+        echo "Installing Terragrunt"
+        wget -O https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64 terragrunt
+        chmod u+x terragrunt
+        mv terragrunt /usr/local/bin/terragrunt
+  - id: "tg-plan"
+    waitFor: ['install-terragrunt']
     name: "hashicorp/terraform:1.4.4"
     dir: "./infra"
     entrypoint: "sh"
     args:
       - "-c"
       - |
-        echo "Applying TF"
-        terraform init
-        terraform apply --auto-approve
+        echo "Planning..."
+        terragrunt init
+        terragrunt plan
+  - id: "tg-apply"
+    waitFor: ['tg-plan']
+    name: "hashicorp/terraform:1.4.4"
+    dir: "./infra"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        echo "Applying.."
+        terragrunt init
+        terragrunt apply -auto-approve
+        
