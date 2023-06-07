@@ -32,30 +32,60 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com",
     "user:max.buckmire-monro@cts.co"
   ]
+#   provisioner "local-exec" {
+#     command = "sleep 120"
+#   }
   depends_on = [
     resource.google_project_iam_member.set_roles
   ]
 }
 
-resource "time_sleep" "wait_120_seconds" {
-    depends_on  = [
-        resource.google_service_account_iam_binding.impersonate_sheets_access
-    ]
-    create_duration = "120s"
+resource "null_resource" "iam_binding_listener" {
+  provisioner "local-exec" {
+    command = <<EOT
+        timeout $TIMEOUT_SECONDS bash -c '
+            until gcloud iam service-accounts get-iam-policy $SA_ID | grep -q $ROLE; do 
+                echo "[ERROR] IAM Binding cannot be found. Retrying..."
+                sleep $RETRY_INTERVAL
+            done
+            echo "[SUCCESS] IAM Binding found."            
+        '
+        if [ $? -ne 0 ]; then 
+            echo "[ERROR] IAM Binding $ROLE not found on service account $SA_ID." 
+            exit 1
+        fi
+    EOT
+    environment = {
+      SA_ID = "${resource.google_service_account.sheets_access.email}" # CAN THESE BE PULLED DIRECTLY FROM THE ATTRIBUTES OF THE BINDING RESOURCE?
+      ROLE  = "roles/iam.serviceAccountTokenCreator" # CAN THESE BE PULLED DIRECTLY FROM THE ATTRIBUTES OF THE BINDING RESOURCE? IF SO COULD MAYBE WRAP THIS IN SOME CUSTOM PROVIDER WITH SIMPLIFIED FIELDS
+      TIMEOUT_SECONDS = "120"
+      RETRY_INTERVAL = "10"
+    }
+  }
+  depends_on = [
+    resource.google_service_account_iam_binding.impersonate_sheets_access
+  ]
 }
 
-data "google_service_account_access_token" "gdrive" {
-  target_service_account = google_service_account.sheets_access.email
-  scopes = [
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/cloud-platform",
-    "https://www.googleapis.com/auth/userinfo.email"
-  ]
-  lifetime = "300s"
-  depends_on = [
-    resource.time_sleep.wait_120_seconds
-  ]
-}
+# # resource "time_sleep" "wait_120_seconds" {
+# #     depends_on  = [
+# #         resource.google_service_account_iam_binding.impersonate_sheets_access
+# #     ]
+# #     create_duration = "120s"
+# # }
+
+# data "google_service_account_access_token" "gdrive" {
+#   target_service_account = google_service_account.sheets_access.email
+#   scopes = [
+#     "https://www.googleapis.com/auth/drive",
+#     "https://www.googleapis.com/auth/cloud-platform",
+#     "https://www.googleapis.com/auth/userinfo.email"
+#   ]
+#   lifetime = "300s"
+#   depends_on = [
+#     resource.null_resource.iam_binding_listener
+#   ]
+# }
 
 # provider "google" {
 #   alias        = "impersonated"
