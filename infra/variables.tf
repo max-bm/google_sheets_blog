@@ -1,5 +1,5 @@
 variable "project_id" {
-  default     = "cts-3d9-objective-bhabha"
+  default     = "another-blog-proj"
   type        = string
   description = "The project where the function should be deployed"
 }
