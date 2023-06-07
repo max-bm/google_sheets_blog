@@ -20,6 +20,7 @@ resource "google_bigquery_dataset" "dataset" {
     }
   }
   depends_on = [
-    google_project_service.enable_apis
+    google_project_service.enable_apis,
+    data.data.google_service_account_access_token.gdrive
   ]
 }
