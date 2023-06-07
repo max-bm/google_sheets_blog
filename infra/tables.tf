@@ -28,7 +28,7 @@ resource "google_project_iam_member" "set_roles" {
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   service_account_id = google_service_account.sheets_access.id
   role               = "roles/iam.serviceAccountTokenCreator"
-  members             = [
+  members = [
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com",
     "user:max.buckmire-monro@cts.co"
   ]
@@ -50,16 +50,16 @@ data "google_service_account_access_token" "gdrive" {
   ]
 }
 
-# provider "google" {
-#   alias        = "impersonated"
-#   access_token = data.google_service_account_access_token.gdrive.access_token
-#   project      = var.project_id
-# }
+provider "google" {
+  alias        = "impersonated"
+  access_token = data.google_service_account_access_token.gdrive.access_token
+  project      = var.project_id
+}
 
 resource "google_bigquery_table" "table" {
   for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
 
-  # provider            = google.impersonated
+  provider            = google.impersonated
   dataset_id          = each.value.dataset_id
   project             = var.project_id
   table_id            = each.value.name
