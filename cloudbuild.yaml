@@ -14,14 +14,5 @@ steps:
               echo "Planning..."
               terragrunt init
               terragrunt plan
-    - id: 'tg-apply'
-      waitFor: ['tg-plan']
-      name: 'hashicorp/terraform:1.4.4'
-      dir: './infra'
-      entrypoint: 'sh'
-      args:
-          - '-c'
-          - |
               echo "Applying.."
-              terragrunt init
               terragrunt apply -auto-approve
