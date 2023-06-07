@@ -1,5 +1,5 @@
 steps:
-    - id: 'install-terragrunt'
+    - id: 'tg-plan'
       waitFor: ['-']
       name: 'hashicorp/terraform:1.4.4'
       dir: './infra'
@@ -11,14 +11,6 @@ steps:
               wget -O terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64
               chmod u+x terragrunt
               mv terragrunt /usr/local/bin/terragrunt
-    - id: 'tg-plan'
-      waitFor: ['install-terragrunt']
-      name: 'hashicorp/terraform:1.4.4'
-      dir: './infra'
-      entrypoint: 'sh'
-      args:
-          - '-c'
-          - |
               echo "Planning..."
               terragrunt init
               terragrunt plan
