@@ -1,9 +1,15 @@
 data "google_project" "demo_project" {
   project_id = var.project_id
+  depends_on = [
+    resource.google_project_service.enable_apis
+  ]
 }
 
 data "google_service_account" "sheets_access" {
   account_id = var.service_account_id
+  depends_on = [
+    resource.google_project_service.enable_apis
+  ]
 }
 
 # locals {
