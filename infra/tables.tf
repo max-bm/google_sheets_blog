@@ -12,29 +12,6 @@ data "google_service_account" "sheets_access" {
   ]
 }
 
-# locals {
-#   sheets_roles = [
-#     "roles/bigquery.admin"
-#   ]
-# }
-
-# resource "google_service_account" "sheets_access" {
-#   account_id   = "sheets-access-sa"
-#   display_name = "Google Sheets Access Service Account"
-# }
-
-# resource "google_project_iam_member" "set_roles" {
-#   for_each = toset(local.sheets_roles)
-
-#   project = var.project_id
-#   role    = each.value
-#   member  = google_service_account.sheets_access.member
-#   depends_on = [
-#     resource.google_service_account.sheets_access,
-#     resource.google_project_service.enable_apis
-#   ]
-# }
-
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   service_account_id = data.google_service_account.sheets_access.name
   role               = "roles/iam.serviceAccountTokenCreator"

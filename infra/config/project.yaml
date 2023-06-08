@@ -1,0 +1,3 @@
+project_id: another-blog-proj
+tfstate_bucket: another-blog-proj-tfstate
+sheets_access_service_account_id: sheets-access-sa
