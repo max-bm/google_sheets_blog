@@ -16,4 +16,4 @@ steps:
               echo "Planning..."
               terragrunt plan --terragrunt-non-interactive
               echo "Applying..."
-              terragrunt apply --terragrunt-non-interactive -auto-aprove
+              terragrunt apply --terragrunt-non-interactive -auto-approve
