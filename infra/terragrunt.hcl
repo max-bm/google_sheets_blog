@@ -1,3 +1,7 @@
+locals {
+    project_config = yamldecode(file("${var.schema_file_path}/project.yaml"))
+}
+
 remote_state {
     backend = "gcs"
     generate = {
