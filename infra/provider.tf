@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = var.tfstate_bucket
+    bucket = yamldecode(file("${var.schema_file_path}/project.yaml"))["tfstate_bucket"]
     prefix = "terraform/blog"
   }
 }

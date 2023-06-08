@@ -16,12 +16,6 @@ variable "schema_file_path" {
   description = "The location of the Bigquery YAML"
 }
 
-variable "bucket_name" {
-  default     = local.project_config.tfstate_bucket
-  type        = string
-  description = local.project_config.project_id
-}
-
 variable "service_account_id" {
   default     = local.project_config.sheets_access_service_account_id
   type        = string
