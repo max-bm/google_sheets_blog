@@ -9,11 +9,11 @@ locals {
   datasets = {
     for ds in local.bigquery.bigquery.datasets : ds.name => ds
   }
-  tables = flatten({
-    for ds in local.datasets : ds.name => {
+  tables = merge([
+    for ds in local.datasets : {
       for tbl in ds.tables : "${ds.name}-${tbl.name}" => tbl
     }
-  })
+  ])
   # tables = flatten([for dataset in local.bigquery.bigquery.datasets : [
   #   for tbl, val in dataset.tables : merge(val, { dataset_id = dataset.name })
   # ]])
