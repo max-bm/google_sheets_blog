@@ -1,5 +1,5 @@
 locals {
-    remote_state_config = yamldecode(file("./config/project.yaml"))
+    project_config = yamldecode(file("./config/project.yaml"))
 }
 
 remote_state {

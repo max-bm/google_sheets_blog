@@ -3,7 +3,7 @@ resource "google_bigquery_dataset" "dataset" {
 
   provider                   = google.impersonated
   dataset_id                 = each.key
-  project                    = var.project_id
+  project                    = local.project_config.project_id
   friendly_name              = try(each.value.friendly_name, each.key)
   description                = try(each.value.description, each.key)
   location                   = try(each.value.location, "EU")

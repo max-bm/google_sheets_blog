@@ -1,12 +1,12 @@
 data "google_project" "demo_project" {
-  project_id = var.project_id
+  project_id = local.project_config.project_id
   depends_on = [
     resource.google_project_service.enable_apis
   ]
 }
 
 data "google_service_account" "sheets_access" {
-  account_id = var.service_account_id
+  account_id = local.project_config.service_account_id
   depends_on = [
     resource.google_project_service.enable_apis
   ]
@@ -36,7 +36,7 @@ data "google_service_account_access_token" "gdrive" {
 provider "google" {
   alias        = "impersonated"
   access_token = data.google_service_account_access_token.gdrive.access_token
-  project      = var.project_id
+  project      = local.project_config.project_id
 }
 
 resource "google_bigquery_table" "table" {
@@ -44,10 +44,9 @@ resource "google_bigquery_table" "table" {
 
   provider            = google.impersonated
   dataset_id          = each.value.dataset_id
-  project             = var.project_id
+  project             = local.project_config.project_id
   table_id            = each.value.name
   deletion_protection = each.value.deletion_protection
-  schema              = try(each.value.schema_file, null) != null ? file("${var.schema_file_path}/${each.value.schema_file}") : null
   labels              = merge(local.default_labels, try(each.value.labels, {}))
 
   dynamic "time_partitioning" {
