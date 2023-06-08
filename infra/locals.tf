@@ -15,8 +15,8 @@ locals {
     }
   ]
   tables = zipmap(
-    flatten([for tbl in local.table_list : keys(item)]),
-    flatten([for tbl in local.table_list : values(item)])
+    flatten([for item in local.table_list : keys(item)]),
+    flatten([for item in local.table_list : values(item)])
   )
   # tables = flatten([for dataset in local.bigquery.bigquery.datasets : [
   #   for tbl, val in dataset.tables : merge(val, { dataset_id = dataset.name })
