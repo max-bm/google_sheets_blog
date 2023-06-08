@@ -1,9 +1,9 @@
 locals {
-  apis = [
+  apis = flatten([
     "bigquery.googleapis.com",
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com"
-  ]
+  ])
   project_config = yamldecode(file("./config/project.yaml"))
   bigquery       = yamldecode(file("./config/bigquery.yaml"))
   datasets = {
