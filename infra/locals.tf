@@ -1,5 +1,4 @@
 locals {
-
   apis = [
     "bigquery.googleapis.com",
     "iam.googleapis.com",

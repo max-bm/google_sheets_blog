@@ -5,10 +5,10 @@ terraform {
       version = "4.68.0"
     }
   }
-  backend "gcs" {
-    bucket = yamldecode(file("${var.schema_file_path}/project.yaml"))["tfstate_bucket"]
-    prefix = "terraform/blog"
-  }
+  # backend "gcs" {
+  #   bucket = "another-blog-proj-tfstate"
+  #   prefix = "terraform/blog"
+  # }
 }
 
 provider "google" {
