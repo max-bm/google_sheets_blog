@@ -1,5 +1,5 @@
 locals {
-  apis = flatten([
+  apis = toset([
     "bigquery.googleapis.com",
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com"
