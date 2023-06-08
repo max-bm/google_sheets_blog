@@ -43,12 +43,12 @@ resource "google_bigquery_table" "table" {
   for_each = local.tables
 
   provider            = google.impersonated
-  dataset_id          = google_bigquery_table.dataset_id
-  table_id            = google_bigquery_table.name
-  deletion_protection = google_bigquery_table.deletion_protection
+  dataset_id          = each.value.dataset_id
+  table_id            = each.value.name
+  deletion_protection = each.value.deletion_protection
 
   dynamic "external_data_configuration" {
-    for_each = google_bigquery_table.external_data_configuration
+    for_each = each.value.external_data_configuration
 
     content {
       autodetect    = external_data_configuration.autodetect
