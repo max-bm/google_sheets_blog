@@ -15,3 +15,9 @@ variable "schema_file_path" {
   type        = string
   description = "The location of the Bigquery YAML"
 }
+
+variable "service_account_id" {
+  default     = "sheets-access-sa"
+  type        = string
+  description = "The ID of your BigQuery-Sheets Service Account"
+}

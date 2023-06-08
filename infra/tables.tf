@@ -2,31 +2,35 @@ data "google_project" "demo_project" {
   project_id = var.project_id
 }
 
-locals {
-  sheets_roles = [
-    "roles/bigquery.admin"
-  ]
+data "google_service_account" "sheets_access" {
+  account_id = var.service_account_id
 }
 
-resource "google_service_account" "sheets_access" {
-  account_id   = "sheets-access-sa"
-  display_name = "Google Sheets Access Service Account"
-}
+# locals {
+#   sheets_roles = [
+#     "roles/bigquery.admin"
+#   ]
+# }
 
-resource "google_project_iam_member" "set_roles" {
-  for_each = toset(local.sheets_roles)
+# resource "google_service_account" "sheets_access" {
+#   account_id   = "sheets-access-sa"
+#   display_name = "Google Sheets Access Service Account"
+# }
 
-  project = var.project_id
-  role    = each.value
-  member  = google_service_account.sheets_access.member
-  depends_on = [
-    resource.google_service_account.sheets_access,
-    resource.google_project_service.enable_apis
-  ]
-}
+# resource "google_project_iam_member" "set_roles" {
+#   for_each = toset(local.sheets_roles)
+
+#   project = var.project_id
+#   role    = each.value
+#   member  = google_service_account.sheets_access.member
+#   depends_on = [
+#     resource.google_service_account.sheets_access,
+#     resource.google_project_service.enable_apis
+#   ]
+# }
 
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
-  service_account_id = google_service_account.sheets_access.id
+  service_account_id = google_service_account.sheets_access.name
   role               = "roles/iam.serviceAccountTokenCreator"
   members = [
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
