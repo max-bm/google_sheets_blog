@@ -5,8 +5,9 @@ remote_state {
         if_exists = "overwrite"
     }
     config = {
-        project = "${yamldecode(file("./config/project.yaml"))["project_id"]}"
-        bucket = "${yamldecode(file("./config/project.yaml"))["project_id"]}-tfstate"
+        project = local.project_config.project_id
+        location = local.project_config.region
+        bucket = "${local.project_config.project_id}-tfstate"
         prefix = "terraform/blog"
     }
 }
