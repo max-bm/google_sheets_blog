@@ -12,8 +12,8 @@ steps:
               chmod u+x terragrunt
               mv terragrunt /usr/local/bin/terragrunt
               echo "Initing..."
-              terragrunt init
+              terragrunt init --terragrunt-non-interactive
               echo "Planning..."
-              terragrunt plan
+              terragrunt plan --terragrunt-non-interactive
               echo "Applying..."
-              terragrunt apply -auto-approve
+              terragrunt apply --terragrunt-non-interactive
