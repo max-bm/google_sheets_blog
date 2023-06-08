@@ -11,7 +11,7 @@ locals {
   }
   tables = toset(flatten([
     for ds in local.datasets : {
-      for tbl in ds.tables : "${tbl.dataset_id}-${tbl.name}" => tbl
+      for tbl in ds.tables : "${ds.name}-${tbl.name}" => tbl
     }
   ]))
   # tables = flatten([for dataset in local.bigquery.bigquery.datasets : [
