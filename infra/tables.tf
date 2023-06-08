@@ -30,7 +30,7 @@ data "google_service_account" "sheets_access" {
 # }
 
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
-  service_account_id = google_service_account.sheets_access.name
+  service_account_id = data.google_service_account.sheets_access.name
   role               = "roles/iam.serviceAccountTokenCreator"
   members = [
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
@@ -38,7 +38,7 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
 }
 
 data "google_service_account_access_token" "gdrive" {
-  target_service_account = google_service_account.sheets_access.email
+  target_service_account = data.google_service_account.sheets_access.email
   scopes = [
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/cloud-platform",
