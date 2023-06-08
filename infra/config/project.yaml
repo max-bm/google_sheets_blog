@@ -1,3 +1,4 @@
-project_id: the-final-blog-test
+project_id: blog-final-test
 region: europe-west2
 service_account_id: sheets-access-sa
+sheets_uri: https://docs.google.com/spreadsheets/d/15i4gnJiQCY0QOp3oWP3u9YolAR21vzl_Wam7oMKIG-M/edit#gid=0
