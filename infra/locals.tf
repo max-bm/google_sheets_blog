@@ -15,7 +15,10 @@ locals {
         for tbl_inner in ds.tables : merge(
           tbl_inner,
           { dataset_id = ds.name },
-          { external_data_configuration.source_uris = [local.project_config.sheets_uri] }
+          { external_data_configuration = merge([
+            tbl_inner.value.external_data_configuration,
+            { sheets_uris = local.project_config.sheets_uri }
+          ]) }
         )
       ]
     ]) : "${tbl.dataset_id}-${tbl.name}" => tbl
