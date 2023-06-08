@@ -51,16 +51,16 @@ resource "google_bigquery_table" "table" {
     for_each = each.value.external_data_configuration
 
     content {
-      autodetect    = external_data_configuration.autodetect
-      source_format = external_data_configuration.source_format
-      source_uris   = external_data_configuration.source_uris
+      autodetect    = each.value.external_data_configuration.autodetect
+      source_format = each.value.external_data_configuration.source_format
+      source_uris   = each.value.external_data_configuration.source_uris
 
       dynamic "google_sheets_options" {
-        for_each = external_data_configuration.google_sheets_options
+        for_each = each.value.external_data_configuration.google_sheets_options
 
         content {
-          range             = google_sheets_options.range
-          skip_leading_rows = google_sheets_options.skip_leading_rows
+          range             = each.value.external_data_configuration.google_sheets_options.range
+          skip_leading_rows = each.value.external_data_configuration.google_sheets_options.skip_leading_rows
         }
       }
     }
