@@ -1,5 +1,5 @@
 locals {
-    project_config = yamldecode(file("${var.schema_file_path}/project.yaml"))
+    project_config = yamldecode(file("$./config/project.yaml"))
 }
 
 remote_state {
