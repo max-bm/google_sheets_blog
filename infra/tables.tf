@@ -43,20 +43,20 @@ resource "google_bigquery_table" "table" {
   for_each = local.tables
 
   provider            = google.impersonated
-  dataset_id          = each.dataset_id
-  table_id            = each.name
-  deletion_protection = each.deletion_protection
+  dataset_id          = each.value.dataset_id
+  table_id            = each.value.name
+  deletion_protection = each.value.deletion_protection
 
   dynamic "external_data_configuration" {
-    for_each = each.external_data_configuration
+    for_each = each.value.external_data_configuration
 
     content {
-      autodetect    = external_data_configuration.autodetect
-      source_format = external_data_configuration.source_format
-      source_uris   = external_data_configuration.source_uris
+      autodetect    = external_data_configuration.value.autodetect
+      source_format = external_data_configuration.value.source_format
+      source_uris   = external_data_configuration.value.source_uris
 
       dynamic "google_sheets_options" {
-        for_each = external_data_configuration.google_sheets_options
+        for_each = external_data_configuration.value.google_sheets_options
 
         content {
           range             = google_sheets_options.value.range
