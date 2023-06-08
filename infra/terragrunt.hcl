@@ -1,5 +1,5 @@
 locals {
-    project_config = yamldecode(file("./config/project.yaml"))
+    remote_state_config = yamldecode(file("./config/project.yaml"))
 }
 
 remote_state {
@@ -9,9 +9,9 @@ remote_state {
         if_exists = "overwrite"
     }
     config = {
-        project = local.project_config.project_id
-        location = local.project_config.region
-        bucket = "${local.project_config.project_id}-tfstate"
+        project = local.remote_state_config.project_id
+        location = local.remote_state_config.region
+        bucket = "${local.remote_state_config.project_id}-tfstate"
         prefix = "terraform/blog"
     }
 }

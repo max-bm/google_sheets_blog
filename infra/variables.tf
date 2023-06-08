@@ -11,7 +11,7 @@ variable "region" {
 }
 
 variable "service_account_id" {
-  default     = local.project_config.sheets_access_service_account_id
+  default     = local.project_config.service_account_id
   type        = string
   description = "The ID of your BigQuery-Sheets Service Account"
 }
