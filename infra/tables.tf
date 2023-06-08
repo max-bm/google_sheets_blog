@@ -48,7 +48,7 @@ resource "google_bigquery_table" "table" {
   deletion_protection = each.value.deletion_protection
 
   dynamic "external_data_configuration" {
-    for_each = each.value.external_data_configuration
+    for_each = try(each.value.external_data_configuration, null) != null ? [1] : []
 
     content {
       autodetect    = external_data_configuration.value.autodetect
@@ -56,7 +56,7 @@ resource "google_bigquery_table" "table" {
       source_uris   = external_data_configuration.value.source_uris
 
       dynamic "google_sheets_options" {
-        for_each = external_data_configuration.value.google_sheets_options
+        for_each = try(external_data_configuration.value.google_sheets_options, null) != null ? [1] : []
 
         content {
           range             = google_sheets_options.value.range
