@@ -35,9 +35,6 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   members = [
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
   ]
-  depends_on = [
-    resource.google_project_iam_member.set_roles
-  ]
 }
 
 data "google_service_account_access_token" "gdrive" {
