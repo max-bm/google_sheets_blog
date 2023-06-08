@@ -1,7 +1,8 @@
 locals {
   apis = [
     "bigquery.googleapis.com",
-    "iam.googleapis.com"
+    "iam.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
 
   default_labels = {
