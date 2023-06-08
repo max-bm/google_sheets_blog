@@ -40,7 +40,7 @@ provider "google" {
 }
 
 resource "google_bigquery_table" "table" {
-  for_each = local.tables.value
+  for_each = local.tables
 
   provider            = google.impersonated
   dataset_id          = each.value.dataset_id
