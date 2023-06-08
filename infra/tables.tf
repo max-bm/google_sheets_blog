@@ -43,24 +43,24 @@ resource "google_bigquery_table" "table" {
   for_each = local.tables
 
   provider            = google.impersonated
-  dataset_id          = each.value.dataset_id
-  table_id            = each.value.name
-  deletion_protection = each.value.deletion_protection
+  dataset_id          = google_bigquery_table.dataset_id
+  table_id            = google_bigquery_table.name
+  deletion_protection = google_bigquery_table.deletion_protection
 
   dynamic "external_data_configuration" {
-    for_each = each.value.external_data_configuration
+    for_each = google_bigquery_table.external_data_configuration
 
     content {
-      autodetect    = each.value.external_data_configuration.autodetect
-      source_format = each.value.external_data_configuration.source_format
-      source_uris   = each.value.external_data_configuration.source_uris
+      autodetect    = external_data_configuration.autodetect
+      source_format = external_data_configuration.source_format
+      source_uris   = external_data_configuration.source_uris
 
       dynamic "google_sheets_options" {
-        for_each = each.value.external_data_configuration.google_sheets_options
+        for_each = external_data_configuration.google_sheets_options
 
         content {
-          range             = each.value.external_data_configuration.google_sheets_options.range
-          skip_leading_rows = each.value.external_data_configuration.google_sheets_options.skip_leading_rows
+          range             = google_sheets_options.range
+          skip_leading_rows = google_sheets_options.skip_leading_rows
         }
       }
     }
