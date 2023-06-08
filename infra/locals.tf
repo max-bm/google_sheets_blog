@@ -17,7 +17,7 @@ locals {
           { dataset_id = ds.name },
           { external_data_configuration = merge(
             tbl_inner.external_data_configuration,
-            { source_uris = local.project_config.sheets_uri }
+            { source_uris = [local.project_config.sheets_uri] }
           ) }
         )
       ]
