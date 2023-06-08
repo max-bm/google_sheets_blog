@@ -4,13 +4,18 @@ locals {
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com"
   ]
-  default_labels = {
-    "department" : "medium"
+  project_config = yamldecode(file("./config/project.yaml"))
+  bigquery       = yamldecode(file("./config/bigquery.yaml"))
+  datasets = {
+    for ds in local.bigquery.bigquery.datasets : ds.name => ds
   }
-  project_config     = yamldecode(file("./config/project.yaml"))
-  bigquery           = yamldecode(file("./config/bigquery.yaml"))
-  datasets_to_create = { for ds in local.bigquery.bigquery.datasets : ds.name => ds if try(ds.create, true) }
-  tables = flatten([for dataset in local.bigquery.bigquery.datasets : [
-    for tbl, val in dataset.tables : merge(val, { dataset_id = dataset.name })
-  ]])
+  tables = flatten([
+    for ds in local.datasets : {
+      for tbl in ds.tables : tbl.name => tbl
+    }
+  ])
+  # tables = flatten([for dataset in local.bigquery.bigquery.datasets : [
+  #   for tbl, val in dataset.tables : merge(val, { dataset_id = dataset.name })
+  # ]])
+  # for_each = { for tbl in local.tables : "${tbl.dataset_id}-${tbl.name}" => tbl }
 }

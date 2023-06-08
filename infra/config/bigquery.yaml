@@ -1,30 +1,12 @@
 bigquery:
     datasets:
-        - name: blogdemo
+        - name: blog_demo
           location: europe-west2
-          create: true
-          friendly_name: blogdemo
-          description: blogdemo
-          labels:
-              project: 'demo'
-          delete_contents_on_destroy: false
           tables:
-              - name: demo_table_1
+              - name: demo_table
                 deletion_protection: false
                 external_data_configuration:
                     autodetect: true
-                    ignore_unknown_values: false
-                    source_format: GOOGLE_SHEETS
-                    source_uris:
-                        - https://docs.google.com/spreadsheets/d/1oJF7TJBAUpMA_eITZwplJfmo3-68dqfWVcDbe1AmTlU/edit#gid=0
-                    google_sheets_options:
-                        range: Sheet1
-                        skip_leading_rows: 1
-              - name: demo_table_2
-                deletion_protection: false
-                external_data_configuration:
-                    autodetect: true
-                    ignore_unknown_values: false
                     source_format: GOOGLE_SHEETS
                     source_uris:
                         - https://docs.google.com/spreadsheets/d/15i4gnJiQCY0QOp3oWP3u9YolAR21vzl_Wam7oMKIG-M/edit#gid=0

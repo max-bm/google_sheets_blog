@@ -21,4 +21,3 @@ retryable_errors = [
 ]
 retry_max_attempts = 12
 retry_sleep_interval_sec = 10
-

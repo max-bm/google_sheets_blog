@@ -1,5 +1,5 @@
 steps:
-    - id: 'tg-plan'
+    - id: 'tg-build'
       waitFor: ['-']
       name: 'hashicorp/terraform:1.4.6'
       dir: './infra'
