@@ -24,8 +24,7 @@ data "google_service_account_access_token" "gdrive" {
   target_service_account = data.google_service_account.sheets_access.email
   scopes = [
     "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/cloud-platform",
-    # "https://www.googleapis.com/auth/userinfo.email"
+    "https://www.googleapis.com/auth/cloud-platform"
   ]
   lifetime = "3600s"
   depends_on = [
