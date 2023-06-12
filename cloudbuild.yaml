@@ -1,31 +1,19 @@
-# TO-DO:
-# - MOVE BACK TO TERRAFORM:
-#   - NEED TO BE ABLE TO READ FROM PROJECT.YAML? name: 'bash'; script: |; #!/usr/bin/env bash ... - can't read between builders (obviously)
-#   - ADD ROLES WE NEED TO CLOUD BUILD SERVICE ACCOUNT? (DON'T THINK I CAN, ACTUALLY - TEST) - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk' or gcr.io/cloud-builders/gcloud
-#   - CREATE THE SHEETS-ACCESS SA HERE? ADD PERMISSION TOO?
-#   - ADD PERMISSIONS TO CB SO WE CAN ENABLE OBJECT VERSIONING
-#   - CREATE THE BUCKET, UPDATE FOR OBJECT VERSIONING
-#   - SEPARATE INTO SEPARATE STEPS - SETUP, INITAL PLAN/APPLY (THAT WILL FAIL),
-#   - RETRY ON TIMEOUT: TERRAFORM PLAN AFTER AN INITIAL TERRAFORM APPLY
-
-#   -
-
-# steps:
-#     - id: 'tg-build'
-#       waitFor: ['-']
-#       name: 'hashicorp/terraform:1.4.6'
-#       dir: './infra'
-#       entrypoint: 'sh'
-#       args:
-#           - '-c'
-#           - |
-#               echo "Installing Terragrunt"
-#               wget -O terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64
-#               chmod u+x terragrunt
-#               mv terragrunt /usr/local/bin/terragrunt
-#               echo "Initing..."
-#               terragrunt init --terragrunt-non-interactive
-#               echo "Planning..."
-#               terragrunt plan --terragrunt-non-interactive
-#               echo "Applying..."
-#               terragrunt apply --terragrunt-non-interactive -auto-approve
+steps:
+    - id: 'tg-build'
+      waitFor: ['-']
+      name: 'hashicorp/terraform:1.4.6'
+      dir: './infra'
+      entrypoint: 'sh'
+      args:
+          - '-c'
+          - |
+              echo "Installing Terragrunt"
+              wget -O terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64
+              chmod u+x terragrunt
+              mv terragrunt /usr/local/bin/terragrunt
+              echo "Initing..."
+              terragrunt init --terragrunt-non-interactive
+              echo "Planning..."
+              terragrunt plan --terragrunt-non-interactive
+              echo "Applying..."
+              terragrunt apply --terragrunt-non-interactive -auto-approve
