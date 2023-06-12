@@ -5,15 +5,15 @@ data "google_project" "demo_project" {
   ]
 }
 
-data "google_service_account" "sheets_access" {
-  account_id = local.project_config.service_account_id
+data "google_service_account" "cloud_build" {
+  account_id = "${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
   depends_on = [
     resource.google_project_service.enable_apis
   ]
 }
 
-data "google_service_account" "cloud_build" {
-  account_id = "${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
+data "google_service_account" "sheets_access" {
+  account_id = local.project_config.service_account_id
   depends_on = [
     resource.google_project_service.enable_apis
   ]
@@ -29,7 +29,7 @@ resource "google_project_iam_custom_role" "sheets_access_roles" {
 
 resource "google_project_iam_binding" "sheets_access_perms" {
   project = local.project_config.project_id
-  role    = resource.google_project_iam_custom_role.sheets_access_roles
+  role    = resource.google_project_iam_custom_role.sheets_access_roles.name
   members = [
     data.google_service_account.sheets_access.member
   ]
