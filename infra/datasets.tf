@@ -7,6 +7,6 @@ resource "google_bigquery_dataset" "dataset" {
 
   depends_on = [
     google_project_service.enable_apis,
-    # data.google_service_account_access_token.gdrive
+    data.google_service_account_access_token.gdrive
   ]
 }
