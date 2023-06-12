@@ -1,19 +1,33 @@
 steps:
-    - id: 'tg-build'
-      waitFor: ['-']
-      name: 'hashicorp/terraform:1.4.6'
-      dir: './infra'
-      entrypoint: 'sh'
-      args:
-          - '-c'
-          - |
-              echo "Installing Terragrunt"
-              wget -O terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64
-              chmod u+x terragrunt
-              mv terragrunt /usr/local/bin/terragrunt
-              echo "Initing..."
-              terragrunt init --terragrunt-non-interactive
-              echo "Planning..."
-              terragrunt plan --terragrunt-non-interactive
-              echo "Applying..."
-              terragrunt apply --terragrunt-non-interactive -auto-approve
+  - id: "tg-builder-install"
+    name: "gcr.io/cloud-builders/gcloud"
+    script: |
+      #!/usr/bin/env bash
+      git clone https://github.com/GoogleCloudPlatform/cloud-builders-community.git
+      cd ./cloud-builders-community/terragrunt
+      gcloud builds submit --config=cloudbuild.yaml
+  - id: "tg-plan"
+    name: "gcr.io/${PROJECT_ID}/terragrunt"
+    args: ["plan"]
+  - id: "tg-apply"
+    name: "gcr.io/${PROJECT_ID}/terragrunt"
+    args: ["apply", "-auto-approve"]
+
+  # - id: 'tg-build'
+  #   waitFor: ['-']
+  #   name: 'hashicorp/terraform:1.4.6'
+  #   dir: './infra'
+  #   entrypoint: 'sh'
+  #   args:
+  #       - '-c'
+  #       - |
+  #           echo "Installing Terragrunt"
+  #           wget -O terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64
+  #           chmod u+x terragrunt
+  #           mv terragrunt /usr/local/bin/terragrunt
+  #           echo "Initing..."
+  #           terragrunt init --terragrunt-non-interactive
+  #           echo "Planning..."
+  #           terragrunt plan --terragrunt-non-interactive
+  #           echo "Applying..."
+  #           terragrunt apply --terragrunt-non-interactive -auto-approve
