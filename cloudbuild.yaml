@@ -6,7 +6,7 @@ steps:
       echo "Installing Terragrunt..."
       wget -O terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.46.2/terragrunt_linux_amd64 && \
         chmod u+x terragrunt && mv terragrunt /usr/local/bin/terragrunt
-      echo "Terragrunt "Initing..."
+      echo "Terragrunt Initing..."
       terragrunt init --terragrunt-non-interactive
       echo "Planning..."
       terragrunt plan --terragrunt-non-interactive
