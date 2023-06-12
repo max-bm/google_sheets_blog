@@ -39,7 +39,7 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   service_account_id = data.google_service_account.sheets_access.name
   role               = "roles/iam.serviceAccountTokenCreator"
   members = [
-    google_service_account.cloud_build.member
+    data.google_service_account.cloud_build.member
   ]
 }
 
