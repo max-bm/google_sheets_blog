@@ -24,7 +24,7 @@ resource "google_project_iam_binding" "sheets_access_perms" {
   project = local.project_config.project_id
   role    = resource.google_project_iam_custom_role.sheets_access_roles
   members = [
-    data.data.google_service_account.sheets_access.name
+    data.google_service_account.sheets_access.name
   ]
 }
 
