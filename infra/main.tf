@@ -15,9 +15,9 @@ data "google_service_account" "sheets_access" {
 resource "google_project_iam_custom_role" "sheets-access-roles" {
   role_id = "sheetsAccessRole"
   title   = "Sheets Access Role"
-  permissions = [
+  # permissions = [
 
-  ]
+  # ]
 }
 
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
