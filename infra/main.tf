@@ -12,7 +12,7 @@ data "google_service_account" "sheets_access" {
   ]
 }
 
-resource "google_project_iam_custom_role" "sheets-access-roles" {
+resource "google_project_iam_custom_role" "sheets_access_roles" {
   role_id = "sheetsAccessRole"
   title   = "Sheets Access Role"
   permissions = [
@@ -20,7 +20,7 @@ resource "google_project_iam_custom_role" "sheets-access-roles" {
   ]
 }
 
-resource "google_service_account_iam_binding" "impersonate_sheets_access" {
+resource "google_service_account_iam_binding" "sheets_access_permissions" {
   service_account_id = data.google_service_account.sheets_access.name
   role               = google_project_iam_custom_role.sheets-access-roles.name
   members = [
@@ -45,6 +45,7 @@ data "google_service_account_access_token" "gdrive" {
   ]
   lifetime = "3600s"
   depends_on = [
+    resource.google_service_account_iam_binding.sheets_access_permissions,
     resource.google_service_account_iam_binding.impersonate_sheets_access
   ]
 }
