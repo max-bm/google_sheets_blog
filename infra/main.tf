@@ -29,7 +29,6 @@ data "google_service_account_access_token" "gdrive" {
   ]
   lifetime = "3600s"
   depends_on = [
-    resource.google_project_iam_binding.sheets_access_permissions,
     resource.google_service_account_iam_binding.impersonate_sheets_access
   ]
 }
