@@ -50,7 +50,7 @@ data "google_service_account_access_token" "gdrive" {
 }
 
 provider "google" {
-  alias   = "impersonated"
-  project = local.project_config.project_id
-  # access_token = data.google_service_account_access_token.gdrive.access_token
+  alias        = "impersonated"
+  project      = local.project_config.project_id
+  access_token = data.google_service_account_access_token.gdrive.access_token
 }
