@@ -12,21 +12,21 @@ data "google_service_account" "sheets_access" {
   ]
 }
 
-# resource "google_project_iam_custom_role" "sheets-access-roles" {
-#   role_id = "sheetsAccessRole"
-#   title   = "Sheets Access Role"
-#   permissions = [
+resource "google_project_iam_custom_role" "sheets-access-roles" {
+  role_id = "sheetsAccessRole"
+  title   = "Sheets Access Role"
+  permissions = [
+    "bigquery.datasets.create"
+  ]
+}
 
-#   ]
-# }
-
-# resource "google_service_account_iam_binding" "impersonate_sheets_access" {
-#   service_account_id = data.google_service_account.sheets_access.name
-#   role               = "roles/iam.serviceAccountTokenCreator"
-#   members = [
-#     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
-#   ]
-# }
+resource "google_service_account_iam_binding" "impersonate_sheets_access" {
+  service_account_id = data.google_service_account.sheets_access.name
+  role               = google_project_iam_custom_role.sheets-access-roles
+  members = [
+    "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
+  ]
+}
 
 # data "google_service_account_access_token" "gdrive" {
 #   target_service_account = data.google_service_account.sheets_access.email
