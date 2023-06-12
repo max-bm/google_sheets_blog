@@ -8,8 +8,6 @@ bigquery:
                 external_data_configuration:
                     autodetect: true
                     source_format: GOOGLE_SHEETS
-                    # source_uris:
-                    #     - https://docs.google.com/spreadsheets/d/15i4gnJiQCY0QOp3oWP3u9YolAR21vzl_Wam7oMKIG-M/edit#gid=0
                     google_sheets_options:
                         range: Sheet1
                         skip_leading_rows: 1
