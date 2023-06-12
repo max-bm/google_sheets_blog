@@ -36,22 +36,22 @@ resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   ]
 }
 
-data "google_service_account_access_token" "gdrive" {
-  target_service_account = data.google_service_account.sheets_access.email
-  scopes = [
-    # "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/cloud-platform",
-    # "https://www.googleapis.com/auth/userinfo.email"
-  ]
-  lifetime = "3600s"
-  depends_on = [
-    resource.google_service_account_iam_binding.sheets_access_permissions,
-    resource.google_service_account_iam_binding.impersonate_sheets_access
-  ]
-}
+# data "google_service_account_access_token" "gdrive" {
+#   target_service_account = data.google_service_account.sheets_access.email
+#   scopes = [
+#     # "https://www.googleapis.com/auth/drive",
+#     "https://www.googleapis.com/auth/cloud-platform",
+#     # "https://www.googleapis.com/auth/userinfo.email"
+#   ]
+#   lifetime = "3600s"
+#   depends_on = [
+#     resource.google_service_account_iam_binding.sheets_access_permissions,
+#     resource.google_service_account_iam_binding.impersonate_sheets_access
+#   ]
+# }
 
 provider "google" {
-  alias        = "impersonated"
-  project      = local.project_config.project_id
-  access_token = data.google_service_account_access_token.gdrive.access_token
+  alias   = "impersonated"
+  project = local.project_config.project_id
+  #   access_token = data.google_service_account_access_token.gdrive.access_token
 }
