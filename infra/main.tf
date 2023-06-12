@@ -22,7 +22,7 @@ resource "google_project_iam_custom_role" "sheets-access-roles" {
 
 resource "google_service_account_iam_binding" "impersonate_sheets_access" {
   service_account_id = data.google_service_account.sheets_access.name
-  role               = google_project_iam_custom_role.sheets-access-roles
+  role               = google_project_iam_custom_role.sheets-access-roles.name
   members = [
     "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
   ]
