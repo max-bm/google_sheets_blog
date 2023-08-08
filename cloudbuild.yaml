@@ -1,0 +1,13 @@
+steps:
+  - id: "terraform init"
+    dir: "./infra"
+    name: "hashicorp/terraform:1.4.6"
+    script: terraform init
+  - id: "terraform plan"
+    dir: "./infra"
+    name: "hashicorp/terraform:1.4.6"
+    script: terraform plan
+  - id: "terraform apply"
+    dir: "./infra"
+    name: "hashicorp/terraform:1.4.6"
+    script: terraform apply --auto-approve
