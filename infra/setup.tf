@@ -26,15 +26,11 @@ resource "google_project_service" "enable_apis" {
 # Reference to the Google Cloud project
 data "google_project" "demo_project" {
   project_id = local.vars.PROJECT_ID
-  depends_on = [
-    resource.google_project_service.enable_apis
-  ]
+  depends_on = [resource.google_project_service.enable_apis]
 }
 
 # Reference to the service account with access to Google Sheets
 data "google_service_account" "service_account" {
   account_id = local.vars.SHEETS_ACCESS_SERVICE_ACCOUNT
-  depends_on = [
-    resource.google_project_service.enable_apis
-  ]
+  depends_on = [resource.google_project_service.enable_apis]
 }

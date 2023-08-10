@@ -1,11 +1,16 @@
 # --- CONFIGURE THE IMPERSONATED PROVIDER ---
+# Grant the BigQuery Data Editor role to the target service account
+resource "google_project_iam_member" "bigquery_data_editor" {
+  project = local.vars.PROJECT_ID
+  role    = "roles/bigquery.dataEditor"
+  member  = "serviceAccount:${data.google_service_account.service_account.email}"
+}
+
 # Grant impersonation permissions to the Cloud Build service account
-resource "google_service_account_iam_binding" "impersonate_service_account" {
+resource "google_service_account_iam_member" "impersonate_service_account" {
   service_account_id = data.google_service_account.service_account.name
   role               = "roles/iam.serviceAccountTokenCreator"
-  members = [
-    "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
-  ]
+  member             = "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
 }
 
 # Wait for IAM permissions to propagate - 120s should be enough
@@ -13,6 +18,7 @@ resource "google_service_account_iam_binding" "impersonate_service_account" {
 resource "time_sleep" "wait_for_iam_propagation" {
   create_duration = "120s"
   depends_on = [
+    google_project_iam_member.bigquery_data_editor,
     google_service_account_iam_binding.impersonate_service_account
   ]
 }
@@ -24,10 +30,8 @@ data "google_service_account_access_token" "gdrive" {
     "https://www.googleapis.com/auth/cloud-platform",
     "https://www.googleapis.com/auth/drive"
   ]
-  lifetime = "3600s"
-  depends_on = [
-    resource.time_sleep.wait_for_iam_propagation
-  ]
+  lifetime   = "3600s"
+  depends_on = [resource.time_sleep.wait_for_iam_propagation]
 }
 
 # Confgure the impersonated provider

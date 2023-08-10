@@ -28,12 +28,14 @@ CLOUD_BUILD_SERVICE_ACCOUNT=$(gcloud projects describe $PROJECT_ID \
 # Enable Cloud Build API and add permissions to Cloud Build service account
 gcloud services enable cloudbuild.googleapis.com
 gcloud services enable iam.googleapis.com
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member=serviceAccount:$CLOUD_BUILD_SERVICE_ACCOUNT@cloudbuild.gserviceaccount.com \
-    --role='roles/serviceusage.serviceUsageAdmin'
+# Allow service account to set service account IAM bindings
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member=serviceAccount:$CLOUD_BUILD_SERVICE_ACCOUNT@cloudbuild.gserviceaccount.com \
     --role='roles/iam.serviceAccountAdmin'
+# Allow service account to enable APIs
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$CLOUD_BUILD_SERVICE_ACCOUNT@cloudbuild.gserviceaccount.com \
+    --role='roles/serviceusage.serviceUsageAdmin'
 # Create bucket for Cloud Build and Terraform
 gcloud storage buckets create gs://"$PROJECT_ID"_cloudbuild \
     --location=$REGION
@@ -43,9 +45,6 @@ gcloud storage buckets create gs://"$PROJECT_ID"_cloudbuild \
 gcloud iam service-accounts create $SHEETS_ACCESS_SERVICE_ACCOUNT \
     --description="" \
     --display-name="Google Sheets Access service account"
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member=serviceAccount:$SHEETS_ACCESS_SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com \
-    --role='roles/bigquery.admin'
 
 # --- CONFIGURE TERRAFORM BACKEND ---
 # Configure required providers and GCS for backend
