@@ -19,7 +19,7 @@ resource "time_sleep" "wait_for_iam_propagation" {
   create_duration = "120s"
   depends_on = [
     google_project_iam_member.bigquery_data_editor,
-    google_service_account_iam_binding.impersonate_service_account
+    google_service_account_iam_member.impersonate_service_account
   ]
 }
 
