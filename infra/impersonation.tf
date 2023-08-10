@@ -28,6 +28,10 @@ provider "google" {
   alias                       = "impersonated"
   project                     = local.vars.PROJECT_ID
   impersonate_service_account = data.google_service_account.service_account.name
+  scopes = [
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/drive"
+  ]
   depends_on = [
     google_project_iam_member.bigquery_data_editor,
     google_service_account_iam_member.impersonate_service_account
