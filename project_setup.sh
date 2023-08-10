@@ -28,7 +28,11 @@ CLOUD_BUILD_SERVICE_ACCOUNT=$(gcloud projects describe $PROJECT_ID \
 # Enable Cloud Build API and add permissions to Cloud Build service account
 gcloud services enable cloudbuild.googleapis.com
 gcloud services enable iam.googleapis.com
-# Allow service account to set service account IAM bindings
+# Role to set project-level IAM binding
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member=serviceAccount:$CLOUD_BUILD_SERVICE_ACCOUNT@cloudbuild.gserviceaccount.com \
+    --role='roles/resourcemanager.projectIamAdmin'
+# Role to set service account IAM bindings
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member=serviceAccount:$CLOUD_BUILD_SERVICE_ACCOUNT@cloudbuild.gserviceaccount.com \
     --role='roles/iam.serviceAccountAdmin'
