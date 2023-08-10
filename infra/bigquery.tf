@@ -4,6 +4,9 @@ resource "google_bigquery_dataset" "dataset" {
   provider   = google.impersonated
   dataset_id = "demo_dataset"
   location   = local.vars.REGION
+  depends_on = [
+    time_sleep.wait_for_iam_propagation
+  ]
 }
 
 # Build the external table with the impersonated provider
