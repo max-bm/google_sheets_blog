@@ -1,4 +1,14 @@
 # --- BUILD THE BIGQUERY DATASET AND EXTERNAL TABLE ---
+# Wait for IAM permissions to propagate - 120s should be enough
+# This is a workaround for some Google resources not having a built-in retry mechanism
+resource "time_sleep" "wait_for_iam_propagation" {
+  create_duration = "120s"
+  depends_on = [
+    google_project_iam_member.bigquery_data_editor,
+    google_service_account_iam_member.impersonate_service_account
+  ]
+}
+
 # Build the dataset with the impersonated provider
 resource "google_bigquery_dataset" "dataset" {
   provider   = google.impersonated

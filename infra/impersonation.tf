@@ -13,16 +13,6 @@ resource "google_service_account_iam_member" "impersonate_service_account" {
   member             = "serviceAccount:${data.google_project.demo_project.number}@cloudbuild.gserviceaccount.com"
 }
 
-# Wait for IAM permissions to propagate - 120s should be enough
-# This is a workaround for Google data sources not having a built-in retry mechanism
-resource "time_sleep" "wait_for_iam_propagation" {
-  create_duration = "120s"
-  depends_on = [
-    google_project_iam_member.bigquery_data_editor,
-    google_service_account_iam_member.impersonate_service_account
-  ]
-}
-
 # Confgure the impersonated provider
 provider "google" {
   alias                       = "impersonated"
